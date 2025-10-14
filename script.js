@@ -727,7 +727,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // ==========================================
-  // LIGHTBOX FUNCTIONALITY
+  // LIGHTBOX FUNCTIONALITY - FIXED VERSION
   // ==========================================
 
   function openLightbox(imgSrc, label) {
@@ -764,17 +764,12 @@ document.addEventListener("DOMContentLoaded", function () {
       lightbox
         .querySelector(".lightbox-close")
         .addEventListener("click", closeLightbox);
+
+      // Close on overlay click
       lightbox
         .querySelector(".lightbox-overlay")
         .addEventListener("click", function (e) {
           if (e.target === this) closeLightbox();
-        });
-
-      // Download button
-      lightbox
-        .querySelector(".lightbox-download")
-        .addEventListener("click", function () {
-          downloadImage(imgSrc, label);
         });
 
       // Keyboard navigation
@@ -783,30 +778,56 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    // Set image and label
-    lightbox.querySelector(".lightbox-image").src = imgSrc;
+    // CRITICAL FIX: Reset image opacity and transform before setting new image
+    const lightboxImg = lightbox.querySelector(".lightbox-image");
+    const lightboxContent = lightbox.querySelector(".lightbox-content");
+
+    // Reset styles immediately
+    gsap.set(lightboxImg, { opacity: 1, scale: 1 });
+    gsap.set(lightboxContent, { opacity: 1, scale: 1 });
+
+    // Set new image and label
+    lightboxImg.src = imgSrc;
     lightbox.querySelector(".lightbox-label").textContent = label;
+
+    // Update download button with current image
+    const downloadBtn = lightbox.querySelector(".lightbox-download");
+    downloadBtn.onclick = function () {
+      downloadImage(imgSrc, label);
+    };
 
     // Show lightbox with animation
     lightbox.style.display = "block";
-    gsap.from(lightbox.querySelector(".lightbox-content"), {
-      scale: 0.8,
-      opacity: 0,
-      duration: 0.4,
-      ease: "power2.out",
-    });
+
+    // Force reflow to ensure display change takes effect
+    void lightbox.offsetHeight;
+
+    gsap.fromTo(
+      lightboxContent,
+      { scale: 0.8, opacity: 0 },
+      { scale: 1, opacity: 1, duration: 0.4, ease: "power2.out" }
+    );
+
+    gsap.fromTo(
+      lightboxImg,
+      { opacity: 0, scale: 0.95 },
+      { opacity: 1, scale: 1, duration: 0.5, delay: 0.2, ease: "power2.out" }
+    );
   }
 
   function closeLightbox() {
     const lightbox = document.getElementById("certificate-lightbox");
     if (lightbox) {
-      gsap.to(lightbox.querySelector(".lightbox-content"), {
+      const lightboxContent = lightbox.querySelector(".lightbox-content");
+      gsap.to(lightboxContent, {
         scale: 0.8,
         opacity: 0,
         duration: 0.3,
         ease: "power2.in",
         onComplete: () => {
           lightbox.style.display = "none";
+          // Reset for next opening
+          gsap.set(lightboxContent, { scale: 1, opacity: 1 });
         },
       });
     }
@@ -997,13 +1018,19 @@ document.addEventListener("DOMContentLoaded", function () {
         overflow: hidden;
         border-radius: 10px;
         margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
       }
       
       .lightbox-image {
         width: 100%;
         height: auto;
+        max-height: 70vh;
         display: block;
         border-radius: 10px;
+        object-fit: contain;
       }
       
       .lightbox-label {
@@ -1091,6 +1118,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         .lightbox-image-container {
+          max-height: 60vh;
+        }
+        
+        .lightbox-image {
           max-height: 60vh;
         }
         
