@@ -26,7 +26,7 @@ nav {
   align-items: center;
   justify-content: space-between;
   background: #0e0e0e;
-  padding: 10px 20px;
+  padding: 7px 20px;
   z-index: 999;
   position: relative;
   border-radius: 12px;
@@ -201,7 +201,7 @@ nav.fixed {
 /* Mobile */
 @media (max-width: 900px) {
   nav {
-    padding: 10px 20px;
+    padding: 7px 20px;
   }
   .nav-links {
     display: flex;
