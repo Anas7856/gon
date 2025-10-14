@@ -1,9 +1,49 @@
+// Hamburger Menu Toggle
 const menuToggle = document.getElementById("menuToggle");
 const navLinks = document.querySelector(".nav-links");
+const navbar = document.getElementById("navbar");
 
 menuToggle.addEventListener("click", () => {
   navLinks.classList.toggle("open");
   menuToggle.classList.toggle("active");
+});
+
+// Close menu when clicking on a link
+const navLinksItems = document.querySelectorAll(".nav-links a");
+navLinksItems.forEach((link) => {
+  link.addEventListener("click", () => {
+    navLinks.classList.remove("open");
+    menuToggle.classList.remove("active");
+  });
+});
+
+// Close menu when clicking outside
+document.addEventListener("click", (e) => {
+  if (!navbar.contains(e.target)) {
+    navLinks.classList.remove("open");
+    menuToggle.classList.remove("active");
+  }
+});
+
+// Fixed Navbar on Scroll with animation
+let lastScroll = 0;
+let isFixed = false;
+
+window.addEventListener("scroll", () => {
+  const currentScroll = window.pageYOffset;
+
+  if (currentScroll > 100 && !isFixed) {
+    navbar.classList.add("fixed");
+    isFixed = true;
+    // Close menu when scrolling
+    navLinks.classList.remove("open");
+    menuToggle.classList.remove("active");
+  } else if (currentScroll <= 100 && isFixed) {
+    navbar.classList.remove("fixed");
+    isFixed = false;
+  }
+
+  lastScroll = currentScroll;
 });
 
 // Make sure GSAP is loaded first
@@ -58,6 +98,7 @@ window.addEventListener("load", function () {
 
 // /////////////////////////////about///////////////////////////
 document.addEventListener("DOMContentLoaded", function () {
+  // Your existing carousel code starts here...
   const carouselTrack = document.querySelector(".carousel-track");
   const prevBtn = document.querySelector(".carousel-prev");
   const nextBtn = document.querySelector(".carousel-next");
@@ -74,16 +115,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const width = window.innerWidth;
     if (width <= 768) {
       cardsPerView = 1;
-      totalSlides = 4; // Show all 4 cards one by one
+      totalSlides = 4;
     } else if (width <= 992) {
       cardsPerView = 2;
-      totalSlides = 2; // Show 2 sets of 2 cards
+      totalSlides = 2;
     } else {
       cardsPerView = 3;
-      totalSlides = 2; // Show 2 sets: first 3 cards, then last card
+      totalSlides = 2;
     }
-
-    // Update indicators based on total slides
     updateIndicators();
   }
 
@@ -116,7 +155,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     carouselTrack.style.transform = `translateX(${translateX}px)`;
 
-    // Update indicators
     const allIndicators = document.querySelectorAll(".indicator");
     allIndicators.forEach((indicator, index) => {
       if (index === currentSlide) {
@@ -126,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    // Update button states
     updateButtonStates();
   }
 
@@ -186,7 +223,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Card hover effects
   cards.forEach((card, index) => {
-    // 3D tilt effect
     card.addEventListener("mousemove", function (e) {
       const rect = this.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -205,7 +241,6 @@ document.addEventListener("DOMContentLoaded", function () {
       this.style.transform = "";
     });
 
-    // Glow effect follows mouse
     card.addEventListener("mousemove", function (e) {
       const rect = this.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -228,17 +263,15 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         moveToSlide(0);
       }
-    }, 5000); // Change slide every 5 seconds
+    }, 5000);
   }
 
   function stopAutoPlay() {
     clearInterval(autoPlayInterval);
   }
 
-  // Start auto-play
   startAutoPlay();
 
-  // Stop auto-play on hover
   const carouselWrapper = document.querySelector(".carousel-wrapper");
   carouselWrapper.addEventListener("mouseenter", stopAutoPlay);
   carouselWrapper.addEventListener("mouseleave", startAutoPlay);
@@ -275,10 +308,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (Math.abs(diff) > swipeThreshold) {
       if (diff > 0 && currentSlide < totalSlides - 1) {
-        // Swipe left - next
         moveToSlide(currentSlide + 1);
       } else if (diff < 0 && currentSlide > 0) {
-        // Swipe right - previous
         moveToSlide(currentSlide - 1);
       }
     }
@@ -292,12 +323,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const oldCardsPerView = cardsPerView;
       updateCardsPerView();
 
-      // Reset to first slide if cards per view changed
       if (oldCardsPerView !== cardsPerView) {
         currentSlide = 0;
         moveToSlide(0);
       } else {
-        // Just recalculate position for current slide
         if (currentSlide >= totalSlides) {
           currentSlide = totalSlides - 1;
         }
@@ -324,7 +353,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }, observerOptions);
 
-  // Initially hide cards for animation
   cards.forEach((card) => {
     card.style.opacity = "0";
     card.style.transform = "translateY(30px)";
@@ -364,7 +392,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
       card.appendChild(particle);
 
-      // Animate particle
       const angle = Math.random() * Math.PI * 2;
       const velocity = 20 + Math.random() * 20;
       const tx = Math.cos(angle) * velocity;
@@ -383,11 +410,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Initialize
   updateCardsPerView();
   updateButtonStates();
 
-  // Animate section on scroll
   const section = document.querySelector(".differentiators");
   const sectionObserver = new IntersectionObserver(
     (entries) => {
@@ -406,7 +431,55 @@ document.addEventListener("DOMContentLoaded", function () {
   section.style.transition = "opacity 0.8s ease, transform 0.8s ease";
   sectionObserver.observe(section);
 
-  console.log("Differentiators carousel initialized successfully!");
+  // ============================================
+  // COUNTER ANIMATION CODE (NEW)
+  // ============================================
+
+  function animateCounter(element, target, duration = 2000) {
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        element.textContent = target + "+";
+        clearInterval(timer);
+      } else {
+        element.textContent = Math.floor(current) + "+";
+      }
+    }, 16);
+  }
+
+  // Counter Observer
+  const counterObserverOptions = {
+    threshold: 0.5,
+    rootMargin: "0px",
+  };
+
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting && !entry.target.classList.contains("counted")) {
+        entry.target.classList.add("counted");
+        const statNumbers = entry.target.querySelectorAll(".stat-number");
+
+        statNumbers.forEach((stat) => {
+          const targetValue = parseInt(stat.getAttribute("data-target"));
+          animateCounter(stat, targetValue, 2000);
+        });
+      }
+    });
+  }, counterObserverOptions);
+
+  // Observe the stats box
+  const statsBox = document.querySelector(".stats-box");
+  if (statsBox) {
+    counterObserver.observe(statsBox);
+  }
+
+  console.log(
+    "Differentiators carousel and counter animation initialized successfully!"
+  );
 });
 // company data /////////////////////
 // ==========================================
