@@ -26,7 +26,7 @@ nav {
   align-items: center;
   justify-content: space-between;
   background: #0e0e0e;
-  padding: 20px;
+  padding: 10px 20px;
   z-index: 999;
   position: relative;
   border-radius: 12px;
@@ -201,7 +201,7 @@ nav.fixed {
 /* Mobile */
 @media (max-width: 900px) {
   nav {
-    padding: 15px 20px;
+    padding: 10px 20px;
   }
   .nav-links {
     display: flex;
@@ -225,7 +225,7 @@ nav.fixed {
   }
 
   .nav-links.open {
-    gap: 15px;
+    gap: 7px;
     max-height: 340px;
     opacity: 1;
     padding: 15px 0px 15px 0px;
@@ -268,7 +268,7 @@ nav.fixed {
 
   .nav-links a {
     font-size: 1rem;
-    padding: 0px 0px 10px 0px;
+    padding: 10px 0px 10px 0px;
     display: block;
     border-radius: 8px;
     margin: 0px 20px;
