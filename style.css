@@ -222,11 +222,10 @@ nav.fixed {
   }
 
   .nav-links.open {
-    max-height: 500px;
+    max-height: 300px;
     opacity: 1;
-    padding: 0px 0;
+    padding: 0px 0px 10px 0px;
   }
-
   .nav-links li {
     opacity: 0;
     transform: translateY(-20px);
@@ -265,10 +264,10 @@ nav.fixed {
 
   .nav-links a {
     font-size: 1rem;
-    padding: 12px 20px;
+    padding: 0px 0px 10px 0px;
     display: block;
     border-radius: 8px;
-    margin: 5px 20px;
+    margin: 0px 20px;
     transition: all 0.3s ease;
   }
 
@@ -431,6 +430,7 @@ nav.fixed {
 /* Responsive */
 @media (max-width: 768px) {
   .hero {
+    margin-top: -60px;
     border-radius: 0;
   }
 
